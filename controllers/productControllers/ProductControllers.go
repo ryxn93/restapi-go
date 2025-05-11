@@ -38,4 +38,25 @@ func Create(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{"product": product})
+
+}
+
+func GetAll(c *gin.Context) {
+	var product []models.Product
+	if err := database.DB.Find(&product).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"message": "Gagal mengambil data"})
+		return
+	}
+	c.JSON(http.StatusOK, product)
+}
+
+func GetByID(c *gin.Context) {
+	id := c.Param("id")
+	var product models.Product
+
+	if err := database.DB.First(&product, id).Error; err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"message": "Produk tidak ditemukan"})
+		return
+	}
+	c.JSON(http.StatusOK, product)
 }
