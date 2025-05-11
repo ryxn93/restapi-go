@@ -60,3 +60,35 @@ func GetByID(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, product)
 }
+
+func Update(c *gin.Context) {
+	id := c.Param("id")
+	var product models.Product
+
+	if err := database.DB.First(&product, id).Error; err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"message": "Produk tidak ditemukan"})
+		return
+	}
+
+	namaProduct := c.PostForm("nama_product")
+	deskripsi := c.PostForm("deskripsi")
+
+	file, _ := c.FormFile("gambar")
+	if file != nil {
+		uploadPath := "/uploads" + file.Filename
+		if err := c.SaveUploadedFile(file, uploadPath); err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"message": "Gagal menyimpan gambar"})
+			return
+		}
+		product.Gambar = uploadPath
+	}
+
+	product.NamaProduct = namaProduct
+	product.Deskripsi = deskripsi
+
+	if err := database.DB.Save(&product).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"message": "Gagal memperbarui produk"})
+		return
+	}
+	c.JSON(http.StatusOK, product)
+}
