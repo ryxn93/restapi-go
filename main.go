@@ -1,13 +1,15 @@
 package main
 
-import "github.com/gin-gonic/gin"
+import (
+	productcontrollers "gin/controllers/productControllers"
+	"gin/database"
+
+	"github.com/gin-gonic/gin"
+)
 
 func main() {
+	database.ConnectToDB()
 	router := gin.Default()
-	router.GET("/ping", func(c *gin.Context) {
-		c.JSON(200, gin.H{
-			"message": "welcome to backend-go",
-		})
-	})
-	router.Run() // listen and serve on 0.0.0.0:8080
+	router.POST("/products", productcontrollers.Create)
+	router.Run()
 }
