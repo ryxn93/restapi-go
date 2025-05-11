@@ -92,3 +92,20 @@ func Update(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, product)
 }
+
+func Delete(c *gin.Context) {
+	id := c.Param("id")
+	var product models.Product
+
+	if err := database.DB.First(&product, id).Error; err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"message": "Produk tidak ditemukan"})
+		return
+	}
+
+	if err := database.DB.Delete(&product).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"message": "Gagal menghapus produk"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "Produk berhasil dihapus"})
+}
