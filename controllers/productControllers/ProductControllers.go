@@ -20,7 +20,7 @@ func Create(c *gin.Context) {
 	}
 
 	//Menyimpan gambar ke direktori lokal
-	uploadPath := "/uploads" + file.Filename
+	uploadPath := "uploads/" + file.Filename
 	if err := c.SaveUploadedFile(file, uploadPath); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"message": "Gagal menyimpan gambar"})
 		return
@@ -75,7 +75,7 @@ func Update(c *gin.Context) {
 
 	file, _ := c.FormFile("gambar")
 	if file != nil {
-		uploadPath := "/uploads" + file.Filename
+		uploadPath := "uploads/" + file.Filename
 		if err := c.SaveUploadedFile(file, uploadPath); err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"message": "Gagal menyimpan gambar"})
 			return
